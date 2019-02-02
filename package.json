@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/JaySebagh/Kiko-Discord-Bot/issues"
   },
-  "homepage": "https://github.com/JaySebagh/Kiko-Discord-Bot#readme"
+  "homepage": "https://github.com/JaySebagh/Kiko-Discord-Bot#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  }
 }
