@@ -12,6 +12,9 @@ client.on('message', (msg) => {
     if (msg.content === ".hello") {
         msg.channel.send(`Hello ${msg.author}!`);
     }
+    if (msg.content === ".master") {
+        msg.channel.send(`My creator is Koe`);
+    }
 })
 
 client.login(token);
