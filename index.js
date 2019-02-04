@@ -59,5 +59,13 @@ client.on('message', async msg => {
             return msg.channel.send(`Could not join the voice channel: ${error}`);
         }
 
+        const dispatcher = connection.playStream(ytdl(args[1]))
+            .on("end", () => {
+                console.log("Song ended.");
+            })
+            .on("error", error => {
+                console.error(error);
+            })
+        dispatcher.setVolumeLogarithmic(5 / 5);
     }
 })
