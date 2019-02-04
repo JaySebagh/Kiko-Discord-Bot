@@ -3,6 +3,7 @@ const Discord = require("discord.js");
 const token = process.env.DISCORD_KEY;
 const client = new Discord.Client({disableEveryone: true});
 const superagent = require("superagent");
+const ytdl = require("ytdl-core");
 
 client.on('ready', () => {
     console.log('Bot is now connected');
@@ -66,7 +67,7 @@ client.on('message', async msg => {
             .on("error", error => {
                 console.error(error);
             })
-        dispatcher.setVolumeLogarithmic(5 / 5);
+        dispatcher.setVolumeLogarithmic(1 / 5);
     } else if (msg.content.startsWith(".stop")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         msg.member.voiceChannel.leave();
