@@ -3,7 +3,6 @@ const Discord = require("discord.js");
 const token = process.env.DISCORD_KEY;
 const client = new Discord.Client({disableEveryone: true});
 const superagent = require("superagent");
-var servers = {};
 
 client.on('ready', () => {
     console.log('Bot is now connected');
@@ -38,10 +37,10 @@ client.on('reconnecting', () => console.log("Reconnecting"));
 
 client.on('message', async msg => {
     if (msg.author.bot) return undefined;
-    if(!msg.content.startsWith(PREFIX)) return undefined;
+    if(!msg.content.startsWith(".")) return undefined;
     const args = msg.content.split(" ");
 
-    if(msg.content.startsWith(`${PREFIX}play`)) {
+    if(msg.content.startsWith(".play")) {
         const voiceChannel = msg.member.voiceChannel;
         if(!voiceChannel) return msg.channel.send("Must be in voice channel to play music.");
         const permissions = voiceChannel.permissionsFor(msg.client.user);
@@ -67,5 +66,9 @@ client.on('message', async msg => {
                 console.error(error);
             })
         dispatcher.setVolumeLogarithmic(5 / 5);
+    } else if (msg.content.startsWith(".stop")) {
+        if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
+        msg.member.voiceChannel.leave();
+        return undefined;
     }
 })
