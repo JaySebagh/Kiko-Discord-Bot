@@ -35,3 +35,29 @@ client.on('error', console.error);
 client.on('ready', () => console.log("Ready"));
 client.on('disconnect', () => console.log("Disconnected"));
 client.on('reconnecting', () => console.log("Reconnecting"));
+
+client.on('message', async msg => {
+    if (msg.author.bot) return undefined;
+    if(!msg.content.startsWith(PREFIX)) return undefined;
+    const args = msg.content.split(" ");
+
+    if(msg.content.startsWith(`${PREFIX}play`)) {
+        const voiceChannel = msg.member.voiceChannel;
+        if(!voiceChannel) return msg.channel.send("Must be in voice channel to play music.");
+        const permissions = voiceChannel.permissionsFor(msg.client.user);
+        if(!permissions.has("CONNECT")) {
+            return msg.channel.send("Cannot connect to voice chat. Make sure I have permission.");
+        }
+        if(!permissions.has("SPEAK")) {
+            return msg.channel.send("Cannot speak in this voice channel. Make sure I have permission.");
+        }
+
+        try {
+            var connection = await voiceChannel.join();
+        } catch (error) {
+            console.error(`Could not join the voice channel: ${error}`);
+            return msg.channel.send(`Could not join the voice channel: ${error}`);
+        }
+
+    }
+})
