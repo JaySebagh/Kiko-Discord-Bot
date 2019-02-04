@@ -1,8 +1,9 @@
 require('dotenv').config()
 const Discord = require("discord.js");
 const token = process.env.DISCORD_KEY;
-const client = new Discord.Client();
+const client = new Discord.Client({disableEveryone: true});
 const superagent = require("superagent");
+var servers = {};
 
 client.on('ready', () => {
     console.log('Bot is now connected');
@@ -27,3 +28,10 @@ client.on('message', async (msg) => {
 });
 
 client.login(token);
+
+// music
+client.on('warn', console.warn);
+client.on('error', console.error);
+client.on('ready', () => console.log("Ready"));
+client.on('disconnect', () => console.log("Disconnected"));
+client.on('reconnecting', () => console.log("Reconnecting"));

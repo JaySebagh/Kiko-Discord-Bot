@@ -20,6 +20,8 @@
     "discord.js": "^11.4.2",
     "dotenv": "^6.2.0",
     "nodemon": "^1.18.9",
-    "superagent": "^4.1.0"
+    "opusscript": "0.0.6",
+    "superagent": "^4.1.0",
+    "ytdl-core": "^0.29.1"
   }
 }
