@@ -61,6 +61,7 @@ client.on('message', async msg => {
         const dispatcher = connection.playStream(ytdl(args[1]))
             .on("end", () => {
                 console.log("Song ended.");
+                voiceChannel.leave();
             })
             .on("error", error => {
                 console.error(error);
