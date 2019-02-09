@@ -88,11 +88,16 @@ client.on('message', async msg => {
         }
 
         return undefined;
+    }else if(msg.content.startsWith(`.skip`)) {
+        if(serverQueue) return msg.channel.send("There is nothing to skip.");
+        serverQueue.connection.dispatcher.end();
+        return undefined;
     } else if (msg.content.startsWith(".stop")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         msg.member.voiceChannel.leave();
         return undefined; 
     }
+    return undefined;
 })
 
 function play(guild, song) {
