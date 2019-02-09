@@ -79,10 +79,11 @@ client.on('message', async msg => {
                 play(msg.guild, queueConstruct.songs[0]);
             } catch (error) {
                 console.error(`Could not join the voice channel: ${error}`);
+                queue.delete(msg.guild.id);
                 return msg.channel.send(`Could not join the voice channel: ${error}`);
             }
         } else {
-            serverQueue.song.push(song);
+            serverQueue.songs.push(song);
             return msg.channel.send(`**${song.title}** has been added to the queue.`)
         }
 
@@ -94,7 +95,7 @@ client.on('message', async msg => {
     }
 })
 
-function play(build, song) {
+function play(guild, song) {
     const serverQueue = queue.get(guild.id);
 
     if (!song) {
@@ -106,7 +107,7 @@ function play(build, song) {
     const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
         .on("end", () => {
             console.log("Song ended.");
-            voiceChannel.leave();
+            serverQueue.songs.shift();
             play(guild, serverQueue.songs[0]);
         })
         .on("error", error => console.error(error));
