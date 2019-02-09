@@ -86,10 +86,9 @@ client.on('message', async msg => {
             serverQueue.songs.push(song);
             return msg.channel.send(`**${song.title}** has been added to the queue.`)
         }
-
         return undefined;
     }else if(msg.content.startsWith(`.skip`)) {
-        if(serverQueue) return msg.channel.send("There is nothing to skip.");
+        if(!serverQueue) return msg.channel.send("There is nothing to skip.");
         serverQueue.connection.dispatcher.end();
         return undefined;
     } else if (msg.content.startsWith(".stop")) {
