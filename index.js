@@ -76,6 +76,7 @@ client.on('message', async msg => {
             try {
                 var connection = await voiceChannel.join();
                 queueConstruct.connection = connection;
+                play(msg.guild, queueConstruct.songs[0]);
             } catch (error) {
                 console.error(`Could not join the voice channel: ${error}`);
                 return msg.channel.send(`Could not join the voice channel: ${error}`);
@@ -86,19 +87,21 @@ client.on('message', async msg => {
         }
 
         return undefined;
-        
-        const dispatcher = connection.playStream(ytdl(args[1]))
-            .on("end", () => {
-                console.log("Song ended.");
-                voiceChannel.leave();
-            })
-            .on("error", error => {
-                console.error(error);
-            })
-        dispatcher.setVolumeLogarithmic(1 / 5);
     } else if (msg.content.startsWith(".stop")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         msg.member.voiceChannel.leave();
         return undefined; 
     }
 })
+
+function play(build, song) {
+    const serverQueue = queue.get(guild.id);
+    const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+        .on("end", () => {
+            console.log("Song ended.");
+            voiceChannel.leave();
+            play(guild, serverQueue.songs[0]);
+        })
+        .on("error", error => console.error(error));
+    dispatcher.setVolumeLogarithmic(1 / 5);
+}
