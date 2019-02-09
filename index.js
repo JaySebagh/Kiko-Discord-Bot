@@ -96,6 +96,13 @@ client.on('message', async msg => {
 
 function play(build, song) {
     const serverQueue = queue.get(guild.id);
+
+    if (!song) {
+        serverQueue.voiceChannel.leave();
+        queue.delete(guild.id);
+        return;
+    }
+
     const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
         .on("end", () => {
             console.log("Song ended.");
