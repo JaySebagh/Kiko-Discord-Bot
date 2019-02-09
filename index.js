@@ -118,5 +118,5 @@ function play(guild, song) {
             play(guild, serverQueue.songs[0]);
         })
         .on("error", error => console.error(error));
-    dispatcher.setVolumeLogarithmic(1 / 5);
+    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 }
