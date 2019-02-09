@@ -30,6 +30,8 @@ client.on('message', async (msg) => {
 client.login(token);
 
 // music
+const queue = new Map();
+
 client.on('warn', console.warn);
 client.on('error', console.error);
 client.on('ready', () => console.log("Ready"));
@@ -40,6 +42,7 @@ client.on('message', async msg => {
     if (msg.author.bot) return undefined;
     if(!msg.content.startsWith(".")) return undefined;
     const args = msg.content.split(" ");
+    const serverQueue = queue.get(msg.guild.id);
 
     if(msg.content.startsWith(".play")) {
         const voiceChannel = msg.member.voiceChannel;
@@ -52,13 +55,38 @@ client.on('message', async msg => {
             return msg.channel.send("Cannot speak in this voice channel. Make sure I have permission.");
         }
 
-        try {
-            var connection = await voiceChannel.join();
-        } catch (error) {
-            console.error(`Could not join the voice channel: ${error}`);
-            return msg.channel.send(`Could not join the voice channel: ${error}`);
+        const songInfo = await ytdl.getInfo(args[1]);
+        const song = {
+            title: songInfo.title,
+            url: songInfo.video_url
+        }
+        if(!serverQueue) {
+            const queueConstruct = {
+                textChannel: msg.channel,
+                voiceChannel: voiceChannel,
+                connection: null,
+                songs: [],
+                volume: 1,
+                playing: true
+            };
+            queue.set(msg.guild.id, queueConstruct);
+
+            queueConstruct.songs.push(song);
+            
+            try {
+                var connection = await voiceChannel.join();
+                queueConstruct.connection = connection;
+            } catch (error) {
+                console.error(`Could not join the voice channel: ${error}`);
+                return msg.channel.send(`Could not join the voice channel: ${error}`);
+            }
+        } else {
+            serverQueue.song.push(song);
+            return msg.channel.send(`**${song.title}** has been added to the queue.`)
         }
 
+        return undefined;
+        
         const dispatcher = connection.playStream(ytdl(args[1]))
             .on("end", () => {
                 console.log("Song ended.");
@@ -71,6 +99,6 @@ client.on('message', async msg => {
     } else if (msg.content.startsWith(".stop")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         msg.member.voiceChannel.leave();
-        return undefined;
+        return undefined; 
     }
 })
