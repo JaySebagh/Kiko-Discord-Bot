@@ -98,6 +98,12 @@ client.on('message', async msg => {
         serverQueue.songs = [];
         serverQueue.connection.dispatcher.end();
         return undefined; 
+    } else if (msg.content.startsWith(`.volume`)) {
+        if(!serverQueue) return msg.channel.send("There is nothing playing.");
+        if(!args[1]) return msg.channel.send(`Current Volume: **${serverQueue.volume}**`);
+        serverQueue.volume = args[1];
+        serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
+        return msg.channel.send(`Volume set to: **${args[1]}**`);
     } else if (msg.content.startsWith(`.np`)) {
         if(!serverQueue) return msg.channel.send("There is nothing playing.");
         return msg.channel.send(`Track: **${serverQueue.songs[0].title}**`);
