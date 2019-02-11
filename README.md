@@ -1,26 +1,26 @@
-**Discord Bot named Kiko**
+# **Discord Bot named Kiko**
 
 
-Commands:
+## Commands:
 
-.hello == says hello to the user
+**.hello** == says hello to the user
 
-.master == master info
+**.master** == master info
 
-.cat == sends random cat picture
+**.cat** == sends random cat picture
 
-.play || .p == play youtube url
+**.play** || .p == play youtube url
 
-.skip || .next == skips current song
+**.skip** || .next == skips current song
 
-.stop == leaves voice channel
+**.stop** == leaves voice channel
 
-.volume || .vol || .v == shows current volume (add number to set the volume (.vol 2))
+**.volume** || .vol || .v == shows current volume (add number to set the volume (.vol 2))
 
-.np == shows song currently playing
+**.np** == shows song currently playing
 
-.queue || .q == shows queue
+**.queue** || .q == shows queue
 
-.pause || .pp == pauses song
+**.pause** || .pp == pauses song
 
-.resume || .r == resumes song
+**.resume** || .r == resumes song
