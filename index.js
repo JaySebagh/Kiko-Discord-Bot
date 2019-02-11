@@ -98,6 +98,9 @@ client.on('message', async msg => {
         serverQueue.songs = [];
         serverQueue.connection.dispatcher.end();
         return undefined; 
+    } else if (msg.content.startsWith(`.np`)) {
+        if(!serverQueue) return msg.channel.send("There is nothing playing.");
+        return msg.channel.send(`Track: **${serverQueue.songs[0].title}**`);
     }
     return undefined;
 })
