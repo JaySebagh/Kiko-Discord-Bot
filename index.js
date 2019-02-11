@@ -117,9 +117,23 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 
 **Track:** ${serverQueue.songs[0].title}
         `);
+    } else if (msg.content.startsWith(`.pause`)) {
+        if(serverQueue && serverQueue.playing) {
+            serverQueue.playing = false;
+            serverQueue.connection.dispatcher.pause();
+            return msg.channel.send(`**Paused**`);
+        }
+        return msg.channel.send("There is nothing playing.");
+    } else if (msg.content.startsWith(`.resume`)) {
+        if(serverQueue && !serverQueue.playing) {
+            serverQueue.playing = true;
+            serverQueue.connection.dispatcher.resume();
+            return msg.channel.send(`**Resumed**`)
     }
+    return msg.channel.send(`There is nothing playing.`);
+}
     return undefined;
-})
+});
 
 function play(guild, song) {
     const serverQueue = queue.get(guild.id);
