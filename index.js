@@ -44,7 +44,7 @@ client.on('message', async msg => {
     const args = msg.content.split(" ");
     const serverQueue = queue.get(msg.guild.id);
 
-    if(msg.content.startsWith(".play")) {
+    if(msg.content.startsWith(".play") || msg.content.startsWith(".p")) {
         const voiceChannel = msg.member.voiceChannel;
         if(!voiceChannel) return msg.channel.send("Must be in voice channel to play music.");
         const permissions = voiceChannel.permissionsFor(msg.client.user);
@@ -87,7 +87,7 @@ client.on('message', async msg => {
             return msg.channel.send(`**${song.title}** has been added to the queue.`)
         }
         return undefined;
-    }else if(msg.content.startsWith(`.skip`)) {
+    }else if(msg.content.startsWith(`.skip`) || msg.content.startsWith(".next")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         if(!serverQueue) return msg.channel.send("There is nothing to skip.");
         serverQueue.connection.dispatcher.end();
@@ -98,7 +98,7 @@ client.on('message', async msg => {
         serverQueue.songs = [];
         serverQueue.connection.dispatcher.end();
         return undefined; 
-    } else if (msg.content.startsWith(`.volume`)) {
+    } else if (msg.content.startsWith(`.volume`) || msg.content.startsWith(".vol") || msg.content.startsWith(".v")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         if(!serverQueue) return msg.channel.send("There is nothing playing.");
         if(!args[1]) return msg.channel.send(`Current Volume: **${serverQueue.volume}**`);
@@ -108,7 +108,7 @@ client.on('message', async msg => {
     } else if (msg.content.startsWith(`.np`)) {
         if(!serverQueue) return msg.channel.send("There is nothing playing.");
         return msg.channel.send(`Track: **${serverQueue.songs[0].title}**`);
-    } else if (msg.content.startsWith(`.queue`)) {
+    } else if (msg.content.startsWith(`.queue`) || msg.content.startsWith(".q")) {
         if(!serverQueue) return msg.channel.send("There is nothing playing.");
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         if(msg.member.voiceChannel) return msg.channel.send(`
@@ -117,14 +117,14 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 
 **Track:** ${serverQueue.songs[0].title}
         `);
-    } else if (msg.content.startsWith(`.pause`)) {
+    } else if (msg.content.startsWith(`.pause`) || msg.content.startsWith(".pp")) {
         if(serverQueue && serverQueue.playing) {
             serverQueue.playing = false;
             serverQueue.connection.dispatcher.pause();
             return msg.channel.send(`**Paused**`);
         }
         return msg.channel.send("There is nothing playing.");
-    } else if (msg.content.startsWith(`.resume`)) {
+    } else if (msg.content.startsWith(`.resume`) || msg.content.startsWith(".r")) {
         if(serverQueue && !serverQueue.playing) {
             serverQueue.playing = true;
             serverQueue.connection.dispatcher.resume();
