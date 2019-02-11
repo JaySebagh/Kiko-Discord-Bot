@@ -99,6 +99,7 @@ client.on('message', async msg => {
         serverQueue.connection.dispatcher.end();
         return undefined; 
     } else if (msg.content.startsWith(`.volume`)) {
+        if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         if(!serverQueue) return msg.channel.send("There is nothing playing.");
         if(!args[1]) return msg.channel.send(`Current Volume: **${serverQueue.volume}**`);
         serverQueue.volume = args[1];
@@ -107,6 +108,15 @@ client.on('message', async msg => {
     } else if (msg.content.startsWith(`.np`)) {
         if(!serverQueue) return msg.channel.send("There is nothing playing.");
         return msg.channel.send(`Track: **${serverQueue.songs[0].title}**`);
+    } else if (msg.content.startsWith(`.queue`)) {
+        if(!serverQueue) return msg.channel.send("There is nothing playing.");
+        if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
+        if(msg.member.voiceChannel) return msg.channel.send(`
+__**Song Queue**__
+${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
+
+**Track:** ${serverQueue.songs[0].title}
+        `);
     }
     return undefined;
 })
