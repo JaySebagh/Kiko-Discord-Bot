@@ -78,10 +78,6 @@ client.on('message', async msg => {
             title: video.title,
             url: `https://www.youtube.com/watch?v=${video.id}`
         };
-        const song = {
-            title: songInfo.title,
-            url: songInfo.video_url
-        }
         if(!serverQueue) {
             const queueConstruct = {
                 textChannel: msg.channel,
