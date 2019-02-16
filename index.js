@@ -59,7 +59,23 @@ client.on('message', async msg => {
             return msg.channel.send("Cannot speak in this voice channel. Make sure I have permission.");
         }
 
-        const songInfo = await ytdl.getInfo(args[1]);
+        try {
+            var video = await youtube.getVideo(url);
+        } catch (error) {
+            try {
+                var videos = await youtube.searchVideos(url, 1);
+                var video = await youtube.getVideoById(videos[0].id);
+            } catch (err) {
+                console.error(err);
+                return msg.channel.send("Could not obtain any search results.");
+            }
+        }
+        console.log(video);
+        const song = {
+            id: video.id,
+            title: video.title,
+            url: `https://www.youtube.com/watch?v=${video.id}`
+        };
         const song = {
             title: songInfo.title,
             url: songInfo.video_url
