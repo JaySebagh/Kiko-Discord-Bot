@@ -3,7 +3,10 @@ const Discord = require("discord.js");
 const token = process.env.DISCORD_KEY;
 const client = new Discord.Client({disableEveryone: true});
 const superagent = require("superagent");
+const YouTube = require('simple-youtube-api');
 const ytdl = require("ytdl-core");
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+const youtube = new YouTube(GOOGLE_API_KEY);
 
 client.on('ready', () => {
     console.log('Bot is now connected');
@@ -41,7 +44,8 @@ client.on('reconnecting', () => console.log("Reconnecting"));
 client.on('message', async msg => {
     if (msg.author.bot) return undefined;
     if(!msg.content.startsWith(".")) return undefined;
-    const args = msg.content.split(" ");
+    const args = msg.content.split(" ")[1];
+    const url = args.replace(/<(.+)>/g, '$1');
     const serverQueue = queue.get(msg.guild.id);
 
     if(msg.content.startsWith(".play") || msg.content.startsWith(".p")) {
