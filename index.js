@@ -90,13 +90,13 @@ client.on('message', async msg => {
     }else if(msg.content.startsWith(`.skip`) || msg.content.startsWith(".next")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         if(!serverQueue) return msg.channel.send("There is nothing to skip.");
-        serverQueue.connection.dispatcher.end();
+        serverQueue.connection.dispatcher.end("Skip command has been used.");
         return undefined;
     } else if (msg.content.startsWith(".stop")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         if(!serverQueue) return msg.channel.send("There is nothing playing to stop.");
         serverQueue.songs = [];
-        serverQueue.connection.dispatcher.end();
+        serverQueue.connection.dispatcher.end("Stop command has been used.");
         return undefined; 
     } else if (msg.content.startsWith(`.volume`) || msg.content.startsWith(".vol") || msg.content.startsWith(".v")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
@@ -145,8 +145,9 @@ function play(guild, song) {
     }
 
     const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
-        .on("end", () => {
-            console.log("Song ended.");
+        .on("end", reason => {
+            if (reason === 'Stream is not generating quickly enough') console.log('Song ended.');
+            else console.log(reason);
             serverQueue.songs.shift();
             play(guild, serverQueue.songs[0]);
         })
