@@ -44,8 +44,10 @@ client.on('reconnecting', () => console.log("Reconnecting"));
 client.on('message', async msg => {
     if (msg.author.bot) return undefined;
     if(!msg.content.startsWith(".")) return undefined;
-    const args = msg.content.split(" ")[1];
-    const url = args.replace(/<(.+)>/g, '$1');
+    const args = msg.content.split(" ");
+    const searchString = args.slice(1).join(' ');
+    const url = args[1].replace(/<(.+)>/g, '$1');
+    console.log(searchString);
     const serverQueue = queue.get(msg.guild.id);
 
     if(msg.content.startsWith(".play") || msg.content.startsWith(".p")) {
@@ -63,7 +65,7 @@ client.on('message', async msg => {
             var video = await youtube.getVideo(url);
         } catch (error) {
             try {
-                var videos = await youtube.searchVideos(url, 1);
+                var videos = await youtube.searchVideos(searchString, 1);
                 var video = await youtube.getVideoById(videos[0].id);
             } catch (err) {
                 console.error(err);
