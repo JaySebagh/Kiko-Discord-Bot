@@ -68,7 +68,7 @@ client.on('message', async msg => {
                 const video2 = await youtube.getVideoById(video.id);
                 await handleVideo(video2, msg, voiceChannel, true);
             }
-            return msg.channel.guild(`Playlist: **${playlist.title}** has been added to the queue!`);
+            return msg.channel.send(`Playlist: **${playlist.title}** has been added to the queue!`);
         } else {
             try {
                 var video = await youtube.getVideo(url);
