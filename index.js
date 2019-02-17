@@ -61,17 +61,23 @@ client.on('message', async msg => {
             return msg.channel.send("Cannot speak in this voice channel. Make sure I have permission.");
         }
 
-        try {
-            var video = await youtube.getVideo(url);
-        } catch (error) {
+        if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
+            const playlist = await youtube.getPlaylist(url);
+        } else {
             try {
-                var videos = await youtube.searchVideos(searchString, 1);
-                var video = await youtube.getVideoById(videos[0].id);
-            } catch (err) {
-                console.error(err);
-                return msg.channel.send("Could not obtain any search results.");
+                var video = await youtube.getVideo(url);
+            } catch (error) {
+                try {
+                    var videos = await youtube.searchVideos(searchString, 1);
+                    var video = await youtube.getVideoById(videos[0].id);
+                } catch (err) {
+                    console.error(err);
+                    return msg.channel.send("Could not obtain any search results.");
+                }
             }
         }
+
+        
         console.log(video);
         const song = {
             id: video.id,
