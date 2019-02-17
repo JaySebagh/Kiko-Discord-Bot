@@ -46,7 +46,7 @@ client.on('message', async msg => {
     if(!msg.content.startsWith(".")) return undefined;
     const args = msg.content.split(" ");
     const searchString = args.slice(1).join(' ');
-    const url = args[1].replace(/<(.+)>/g, '$1');
+    const url = args[1] ? args[1].replace(/<(.+)>/g, '$1') : '';
     console.log(searchString);
     const serverQueue = queue.get(msg.guild.id);
 
@@ -75,7 +75,7 @@ client.on('message', async msg => {
         console.log(video);
         const song = {
             id: video.id,
-            title: video.title,
+            title: Util.escapeMarkDown(video.title),
             url: `https://www.youtube.com/watch?v=${video.id}`
         };
         if(!serverQueue) {
