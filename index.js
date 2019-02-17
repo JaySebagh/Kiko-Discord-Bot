@@ -63,6 +63,12 @@ client.on('message', async msg => {
 
         if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
             const playlist = await youtube.getPlaylist(url);
+            const videos = await playlist.getVideos();
+            for (const video of Object.values(videos)) {
+                const video2 = await youtube.getVideoById(video.id);
+                await handleVideo(video2, msg, voiceChannel, true);
+            }
+            return msg.channel.guild(`Playlist: **${playlist.title}** has been added to the queue!`);
         } else {
             try {
                 var video = await youtube.getVideo(url);
@@ -125,8 +131,8 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
     return undefined;
 });
 
-async function handleVideo(video, msg, voiceChannel) {
-    cosnt serverQueue = queue.get(msg.guild.id);
+async function handleVideo(video, msg, voiceChannel, playlist = false) {
+    const serverQueue = queue.get(msg.guild.id);
     console.log(video);
         const song = {
             id: video.id,
@@ -157,7 +163,8 @@ async function handleVideo(video, msg, voiceChannel) {
             }
         } else {
             serverQueue.songs.push(song);
-            return msg.channel.send(`**${song.title}** has been added to the queue.`)
+            if(playlist) return undefined;
+            else return msg.channel.send(`**${song.title}** has been added to the queue.`)
         }
     return undefined;
 }
