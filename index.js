@@ -77,40 +77,6 @@ client.on('message', async msg => {
             }
         }
 
-        
-        console.log(video);
-        const song = {
-            id: video.id,
-            title: Util.escapeMarkDown(video.title),
-            url: `https://www.youtube.com/watch?v=${video.id}`
-        };
-        if(!serverQueue) {
-            const queueConstruct = {
-                textChannel: msg.channel,
-                voiceChannel: voiceChannel,
-                connection: null,
-                songs: [],
-                volume: 1,
-                playing: true
-            };
-            queue.set(msg.guild.id, queueConstruct);
-
-            queueConstruct.songs.push(song);
-            
-            try {
-                var connection = await voiceChannel.join();
-                queueConstruct.connection = connection;
-                play(msg.guild, queueConstruct.songs[0]);
-            } catch (error) {
-                console.error(`Could not join the voice channel: ${error}`);
-                queue.delete(msg.guild.id);
-                return msg.channel.send(`Could not join the voice channel: ${error}`);
-            }
-        } else {
-            serverQueue.songs.push(song);
-            return msg.channel.send(`**${song.title}** has been added to the queue.`)
-        }
-        return undefined;
     }else if(msg.content.startsWith(`.skip`) || msg.content.startsWith(".next")) {
         if (!msg.member.voiceChannel) return msg.channel.send("Must be in voice channel.");
         if(!serverQueue) return msg.channel.send("There is nothing to skip.");
@@ -158,6 +124,43 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 }
     return undefined;
 });
+
+async function handleVideo(video, msg, voiceChannel) {
+    cosnt serverQueue = queue.get(msg.guild.id);
+    console.log(video);
+        const song = {
+            id: video.id,
+            title: Util.escapeMarkDown(video.title),
+            url: `https://www.youtube.com/watch?v=${video.id}`
+        };
+        if(!serverQueue) {
+            const queueConstruct = {
+                textChannel: msg.channel,
+                voiceChannel: voiceChannel,
+                connection: null,
+                songs: [],
+                volume: 1,
+                playing: true
+            };
+            queue.set(msg.guild.id, queueConstruct);
+
+            queueConstruct.songs.push(song);
+            
+            try {
+                var connection = await voiceChannel.join();
+                queueConstruct.connection = connection;
+                play(msg.guild, queueConstruct.songs[0]);
+            } catch (error) {
+                console.error(`Could not join the voice channel: ${error}`);
+                queue.delete(msg.guild.id);
+                return msg.channel.send(`Could not join the voice channel: ${error}`);
+            }
+        } else {
+            serverQueue.songs.push(song);
+            return msg.channel.send(`**${song.title}** has been added to the queue.`)
+        }
+    return undefined;
+}
 
 function play(guild, song) {
     const serverQueue = queue.get(guild.id);
