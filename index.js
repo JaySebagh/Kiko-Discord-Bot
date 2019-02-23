@@ -75,7 +75,13 @@ client.on('message', async msg => {
             } catch (error) {
                 try {
                     var videos = await youtube.searchVideos(searchString, 10);
-                    return console.log(videos);
+                    return msg.channel.send(`
+__**Song Selection:**__
+
+${videos.map(videos2 => `**-** ${video2.title}`).join('\n')}
+
+Please return the number value of one of the search results from 1-10.
+                    `);
                     var video = await youtube.getVideoById(videos[0].id);
                 } catch (err) {
                     console.error(err);
