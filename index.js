@@ -75,13 +75,24 @@ client.on('message', async msg => {
             } catch (error) {
                 try {
                     var videos = await youtube.searchVideos(searchString, 10);
-                    return msg.channel.send(`
+                    let index = 0;
+                    msg.channel.send(`
 __**Song Selection:**__
 
-${videos.map(videos2 => `**-** ${video2.title}`).join('\n')}
+${videos.map(videos2 => `**${++index} -** ${video2.title}`).join('\n')}
 
 Please return the number value of one of the search results from 1-10.
                     `);
+                    try {
+                        var response = await msg.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 11, {
+                            maxMatches: 1,
+                            time: 10000,
+                            errors: ['time']
+                        });
+                    } catch (err) {
+                        console.error(err);
+                        return msg.channel.send('No or invalid value entered, cancelling selection.');
+                    }
                     var video = await youtube.getVideoById(videos[0].id);
                 } catch (err) {
                     console.error(err);
