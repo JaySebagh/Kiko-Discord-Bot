@@ -93,7 +93,8 @@ Please return the number value of one of the search results from 1-10.
                         console.error(err);
                         return msg.channel.send('No or invalid value entered, cancelling selection.');
                     }
-                    var video = await youtube.getVideoById(videos[0].id);
+                    const videoIndex = parseInt(response.first().content);
+                    var video = await youtube.getVideoById(videos[videoIndex - 1].id);
                 } catch (err) {
                     console.error(err);
                     return msg.channel.send("Could not obtain any search results.");
